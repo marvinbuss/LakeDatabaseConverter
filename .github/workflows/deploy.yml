@@ -1,0 +1,60 @@
+name: Test & Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "code/**"
+      - "infra/**"
+      - ".github/workflows/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "code/**"
+      - "infra/**"
+      - ".github/workflows/**"
+
+env:
+  DOTNET_VERSION: "6.0.x"
+  WORKING_DIRECTORY: "code/"
+  AZURE_SUBSCRIPTION_ID: "4060c03e-0d2e-44b7-82a3-da9376fe50b2"  # Update to '{dataLandingZoneSubscriptionId}'
+  AZURE_LOCATION: "northeurope"                                  # Update to '{regionName}'
+
+
+jobs:
+  dotnet_validation:
+    name: .Net - Build and Test
+    runs-on: ubuntu-latest
+    continue-on-error: false
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        id: checkout_repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Setup .Net version
+      - name: Setup .NET ${{ env.DOTNET_VERSION }}
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      # Restore .Net dependencies
+      - name: Restore .NET dependencies
+        id: dotnet_restore
+        run: dotnet restore
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      # Build .NET project
+      - name: Build .NET project
+        id: dotnet_build
+        run: dotnet build --no-restore
+        working-directory: ${{ env.WORKING_DIRECTORY }}
+
+      # Test .NET project
+      - name: Test .NET project
+        id: dotnet_test
+        run: dotnet test --no-build --verbosity normal
+        working-directory: ${{ env.WORKING_DIRECTORY }}
