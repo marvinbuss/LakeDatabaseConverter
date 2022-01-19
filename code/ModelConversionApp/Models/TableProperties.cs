@@ -12,6 +12,7 @@
             this.Description = description;
             this.DisplayFolderInfo = displayFolderInfo;
             this.PrimaryKeys = primaryKeys;
+            // this.spark.sql.sources.provider = "parquet";
         }
     }
 }

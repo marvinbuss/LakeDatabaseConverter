@@ -1,10 +1,10 @@
 ﻿namespace ModelConversionApp.Models;
 
-internal class Namespace
+internal class TableNamespace
 {
     private readonly string DatabaseName;
 
-    public Namespace(string databaseName)
+    public TableNamespace(string databaseName)
     {
         this.DatabaseName = databaseName;
     }
