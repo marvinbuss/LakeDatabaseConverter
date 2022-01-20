@@ -22,4 +22,9 @@ internal class TableDescription
     {
         this.Columns.Add(column);
     }
+
+    internal void AddColumns(List<Column> columns)
+    {
+        this.Columns.AddRange(columns);
+    }
 }

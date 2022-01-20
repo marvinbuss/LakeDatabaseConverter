@@ -19,7 +19,7 @@ internal class Table
     [JsonPropertyName("IsRewriteEnabled")]
     public bool IsRewriteEnabled { get; set; } = false;
     [JsonPropertyName("Namespace")]
-    public TableNamespace Namespace { get; set; }
+    public Namespace Namespace { get; set; }
     [JsonPropertyName("Properties")]
     public TableProperties Properties { get; set; } = new TableProperties();
     [JsonPropertyName("Origin")]
@@ -30,5 +30,10 @@ internal class Table
     internal void AddColumn(Column column)
     {
         this.StorageDescriptor.AddColumn(column);
+    }
+
+    internal void AddColumns(List<Column> columns)
+    {
+        this.StorageDescriptor.AddColumns(columns);
     }
 }
