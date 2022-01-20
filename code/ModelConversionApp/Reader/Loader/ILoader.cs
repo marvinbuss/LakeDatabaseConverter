@@ -2,5 +2,5 @@
 
 internal interface ILoader
 {
-    internal void LoadModel(string filePath);
+    internal Task LoadModelAsync(string filePath);
 }
