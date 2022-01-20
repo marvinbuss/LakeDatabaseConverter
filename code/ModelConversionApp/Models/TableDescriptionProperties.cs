@@ -1,15 +1,13 @@
-﻿namespace ModelConversionApp.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ModelConversionApp.Models;
 
 internal class TableDescriptionProperties
 {
-    // private readonly string textinputformat.record.delimiter;
-    private readonly string compression;
-    private readonly string derivedModelAttributeInfo;
-    
-    public TableDescriptionProperties()
-    {
-        // this.textinputformat.record.delimiter = ",";
-        this.compression = "{\"type\":\"None\",\"level\":\"optimal\"}";
-        this.derivedModelAttributeInfo = "{\"attributeReferences\":{}}";
-    }
+    [JsonPropertyName("textinputformat.record.delimiter")]
+    public string TextinputformatRecordDelimiter { get; set; } = ",";
+    [JsonPropertyName("compression")]
+    public string Compression { get; set; } = "{\"type\":\"None\",\"level\":\"optimal\"}";
+    [JsonPropertyName("derivedModelAttributeInfo")]
+    public string DerivedModelAttributeInfo { get; set; } = "{\"attributeReferences\":{}}";
 }

@@ -1,11 +1,9 @@
-﻿namespace ModelConversionApp.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ModelConversionApp.Models;
 
 internal class DatabaseProperties
 {
-    private readonly bool IsSyMSCDMDatabase;
-
-    public DatabaseProperties(bool isSyMSCDMDatabase)
-    {
-        this.IsSyMSCDMDatabase = isSyMSCDMDatabase;
-    }
+    [JsonPropertyName("IsSyMSCDMDatabase")]
+    public bool IsSyMSCDMDatabase { get; set; } = true;
 }

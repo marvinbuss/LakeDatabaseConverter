@@ -1,13 +1,12 @@
-﻿namespace ModelConversionApp.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ModelConversionApp.Models;
 
 internal class OriginDataTypeProperties
 {
-    private readonly string HIVE_TYPE_STRING;
-    private readonly string TimestampFormat;
-
-    public OriginDataTypeProperties(string hiveTypeString)
-    {
-        this.HIVE_TYPE_STRING = hiveTypeString;
-        this.TimestampFormat = "YYYY-MM-DD HH:MM:SS.fffffffff";
-    }
+    [JsonPropertyName("HIVE_TYPE_STRING")]
+    public string HiveTypeString { get; set; }
+    [JsonPropertyName("TimestampFormat")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? TimestampFormat { get; set; } = null;  // for timestamp use "YYYY-MM-DD HH:MM:SS.fffffffff"
 }

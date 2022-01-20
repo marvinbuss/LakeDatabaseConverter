@@ -1,23 +1,22 @@
-﻿namespace ModelConversionApp.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ModelConversionApp.Models;
 
 internal class TableDescription
 {
-    private readonly List<Column> Columns;
-    private readonly Format Format;
-    private readonly Source? Source;
-    private readonly TableDescriptionProperties Properties;
-    private readonly bool Compressed;
-    private readonly bool IsStoredAsSubdirectories;
-
-    public TableDescription()
-    {
-        this.Columns = new List<Column>();
-        this.Format = new Format(formatType: "parquet");
-        this.Source = null;
-        this.Properties = new TableDescriptionProperties();
-        this.Compressed = false;
-        this.IsStoredAsSubdirectories = false;
-    }
+    [JsonPropertyName("Columns")]
+    public List<Column> Columns { get; set; } = new List<Column>();
+    [JsonPropertyName("Format")]
+    public Format Format { get; set; } = new Format();
+    [JsonPropertyName("Source")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Source? Source = null;
+    [JsonPropertyName("Properties")]
+    public TableDescriptionProperties Properties { get; set; } = new TableDescriptionProperties();
+    [JsonPropertyName("Compressed")]
+    public bool Compressed { get; set; } = false;
+    [JsonPropertyName("IsStoredAsSubdirectories")]
+    public bool IsStoredAsSubdirectories { get; set; } = false;
 
     internal void AddColumn(Column column)
     {

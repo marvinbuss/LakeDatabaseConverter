@@ -1,11 +1,9 @@
-﻿namespace ModelConversionApp.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ModelConversionApp.Models;
 
 internal class TableNamespace
 {
-    private readonly string DatabaseName;
-
-    public TableNamespace(string databaseName)
-    {
-        this.DatabaseName = databaseName;
-    }
+    [JsonPropertyName("DatabaseName")]
+    public string DatabaseName { get; set; }
 }

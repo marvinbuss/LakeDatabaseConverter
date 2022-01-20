@@ -1,18 +1,16 @@
-﻿namespace ModelConversionApp.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ModelConversionApp.Models
 {
     internal class TableProperties
     {
-        private readonly string Description;
-        private readonly string DisplayFolderInfo;
-        private readonly string PrimaryKeys;
-        //private readonly string spark.sql.sources.provider;
-
-        public TableProperties(string description, string displayFolderInfo, string primaryKeys)
-        {
-            this.Description = description;
-            this.DisplayFolderInfo = displayFolderInfo;
-            this.PrimaryKeys = primaryKeys;
-            // this.spark.sql.sources.provider = "parquet";
-        }
+        [JsonPropertyName("Description")]
+        public string Description { get; set; } = "";
+        [JsonPropertyName("DisplayFolderInfo")]
+        public string DisplayFolderInfo { get; set; } = "{\"name\":\"Others\",\"colorCode\":\"\"}";
+        [JsonPropertyName("PrimaryKeys")]
+        public string PrimaryKeys { get; set; } = "";
+        [JsonPropertyName("spark.sql.sources.provider")]
+        public string sparkSqlSourcesProvider { get; set; } = "parquet";
     }
 }

@@ -1,28 +1,20 @@
-﻿namespace ModelConversionApp.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ModelConversionApp.Models;
 
 internal class Database
 {
-    private readonly string Name;
-    private readonly string Description;
-    private readonly string EntityType;
-    private readonly Origin Origin;
-    private readonly DatabaseProperties Properties;
-    private readonly Source? Source;
-    private readonly List<Table> Tables;
-
-    public Database(string name, string description)
-    {
-        this.Name = name;
-        this.Description = description;
-        this.EntityType = "DATABASE";
-        this.Origin = new Origin(type: "SPARK");
-        this.Properties = new DatabaseProperties(isSyMSCDMDatabase: true);
-        this.Source = null;
-        this.Tables = new List<Table>();
-    }
-
-    public void AddTable(Table table)
-    {
-        Tables.Add(table);
-    }
+    [JsonPropertyName("Name")]
+    public string Name { get; set; }
+    [JsonPropertyName("Description")]
+    public string Description { get; set; } = "";
+    [JsonPropertyName("EntityType")]
+    public string EntityType { get; set; } = "DATABASE";
+    [JsonPropertyName("Origin")]
+    public Origin Origin { get; set; } = new Origin();
+    [JsonPropertyName("Properties")]
+    public DatabaseProperties Properties { get; set; } = new DatabaseProperties();
+    [JsonPropertyName("Source")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public Source? Source { get; set; } = null;
 }
