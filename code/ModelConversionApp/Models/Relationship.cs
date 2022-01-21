@@ -18,4 +18,6 @@ internal class Relationship
     public string ToTableName { get; set; }
     [JsonPropertyName("RelationshipType")]
     public int RelationshipType { get; set; } = 0;
+    [JsonPropertyName("ColumnRelationshipInformations")]
+    public ColumnRelationshipInformations ColumnRelationshipInformations { get; set; }
 }
