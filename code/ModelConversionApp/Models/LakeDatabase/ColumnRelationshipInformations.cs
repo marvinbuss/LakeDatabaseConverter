@@ -2,7 +2,7 @@
 
 namespace ModelConversionApp.Models.LakeDatabase;
 
-internal class ColumnRelationshipInformations
+internal class ColumnRelationshipInformation
 {
     [JsonPropertyName("FromColumnName")]
     public string FromColumnName { get; set; } = string.Empty;
