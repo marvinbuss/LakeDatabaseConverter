@@ -9,10 +9,16 @@ internal class OriginDataType
     [JsonPropertyName("IsComplexType")]
     public bool IsComplexType { get; set; } = false;
     [JsonPropertyName("IsNullable")]
-    public string IsNullable { get; set; } = "true";
+    public bool IsNullable { get; set; } = true;
     [JsonPropertyName("Length")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public string Length { get; set; } = "0";
+    public int Length { get; set; } = 0;  // Only for columns of type string
+    [JsonPropertyName("Precision")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public int Precision { get; set; } = 0;  // Only for columns of type decimal
+    [JsonPropertyName("Scale")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public int Scale { get; set; } = 0;  // Only for columns of type decimal
     [JsonPropertyName("Properties")]
-    public OriginDataTypeProperties? Properties { get; set; }
+    public OriginDataTypeProperties? Properties { get; set; } = new OriginDataTypeProperties();
 }

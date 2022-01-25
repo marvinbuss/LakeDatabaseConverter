@@ -9,4 +9,7 @@ internal class OriginDataTypeProperties
     [JsonPropertyName("TimestampFormat")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? TimestampFormat { get; set; } = null;  // for timestamp use "YYYY-MM-DD HH:MM:SS.fffffffff"
+    [JsonPropertyName("DateFormat")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? DateFormat { get; set; } = null;  // for date use "YYYY-MM-DD"
 }

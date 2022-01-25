@@ -9,7 +9,7 @@ internal class Format
     [JsonPropertyName("OutputFormat")]
     public string OutputFormat { get; set; } = "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat";
     [JsonPropertyName("FormatType")]
-    public string FormatType { get; set; } = string.Empty;
+    public string FormatType { get; set; } = "parquet";
     [JsonPropertyName("SerializeLib")]
     public string SerializeLib { get; set; } = "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe";
     [JsonPropertyName("Properties")]

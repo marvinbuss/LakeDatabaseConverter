@@ -11,7 +11,7 @@ internal class Relationship
     [JsonPropertyName("Origin")]
     public Origin Origin { get; set; } = new Origin();
     [JsonPropertyName("Namespace")]
-    public Namespace Namespace { get; set; }
+    public Namespace Namespace { get; set; } = new Namespace();
     [JsonPropertyName("FromTableName")]
     public string FromTableName { get; set; } = string.Empty;
     [JsonPropertyName("ToTableName")]

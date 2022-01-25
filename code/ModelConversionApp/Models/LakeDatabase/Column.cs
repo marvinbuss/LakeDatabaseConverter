@@ -9,5 +9,5 @@ internal class Column
     [JsonPropertyName("Description")]
     public string Description { get; set; } = "";
     [JsonPropertyName("OriginDataTypeName")]
-    public OriginDataType? OriginDataTypeName { get; set; }
+    public OriginDataType OriginDataTypeName { get; set; } = new OriginDataType();
 }
