@@ -37,6 +37,9 @@ internal class LakeDatabaseWriter
         // Write lake database tables to folder
         foreach (var table in Tables)
         {
+            // Create directory structure
+            Directory.CreateDirectory(path: $"{Directory.GetCurrentDirectory()}/database/{table.Namespace.DatabaseName}/table");
+
             databaseNames.Add(item: table.Namespace.DatabaseName);
             var tableFileContent = new
             {
@@ -52,6 +55,9 @@ internal class LakeDatabaseWriter
         // Write lake database relationships to folder
         foreach (var relationship in Relationships)
         {
+            // Create directory structure
+            Directory.CreateDirectory(path: $"{Directory.GetCurrentDirectory()}/database/{relationship.Namespace.DatabaseName}/relationship");
+
             var relationshipFileContent = new
             {
                 name = relationship.Name,
