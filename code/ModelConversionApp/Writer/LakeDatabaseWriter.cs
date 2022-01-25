@@ -31,6 +31,7 @@ internal class LakeDatabaseWriter
         var options = new JsonSerializerOptions
         {
             WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
 
         // Write lake database tables to folder
