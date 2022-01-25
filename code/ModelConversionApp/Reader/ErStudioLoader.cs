@@ -151,45 +151,43 @@ internal class ErStudioLoader : ILoader
                 }
                 else if (GetAttributeValue(node: childNode, attributeName: "name").Contains(value: "_RELATIONSHIP"))
                 {
-                    var relationships_new = this.CreateRelationships(uniqueNode: childNode, sourceTableName: table.Name, databaseName: table.Namespace.DatabaseName);
-                    relationships.AddRange(relationships_new);
+                    var relationship = this.CreateRelationships(uniqueNode: childNode, sourceTableName: table.Name, databaseName: table.Namespace.DatabaseName);
+                    relationships.Add(relationship);
                 }
             }
         }
         return (table, relationships);
     }
 
-    private List<Relationship> CreateRelationships(XmlNode uniqueNode, string sourceTableName, string databaseName)
+    private Relationship CreateRelationships(XmlNode uniqueNode, string sourceTableName, string databaseName)
     {
-        var relationships = new List<Relationship>();
-        int i = 1;
-
         // Parse name of the other table
         var sinkTableName = GetAttributeValue(node: uniqueNode, attributeName: "name").Split(separator: "_RELATIONSHIP")[0];
+
+        var relationship = new Relationship
+        {
+            Name = $"{sourceTableName}-{sinkTableName}",
+            Namespace = new Namespace
+            {
+                DatabaseName = databaseName,
+            },
+            FromTableName = sourceTableName,
+            ToTableName = sinkTableName
+        };
 
         foreach (XmlNode childNode in uniqueNode)
         {
             if (childNode.Name == "xs:field")
             {
-                var relationship = new Relationship
+                var columnRelationshipInformation = new ColumnRelationshipInformation
                 {
-                    Name = $"{sourceTableName}-{sinkTableName}-{i++}",
-                    Namespace = new Namespace
-                    {
-                        DatabaseName = databaseName,
-                    },
-                    FromTableName = sourceTableName,
-                    ToTableName = sinkTableName,
-                    ColumnRelationshipInformations = new ColumnRelationshipInformations
-                    {
-                        FromColumnName = GetAttributeValue(node: childNode, attributeName: "xpath"),
-                        ToColumnName = GetAttributeValue(node: childNode, attributeName: "xpath"),
-                    },
+                    FromColumnName = GetAttributeValue(node: childNode, attributeName: "xpath"),
+                    ToColumnName = GetAttributeValue(node: childNode, attributeName: "xpath"),
                 };
-                relationships.Add(relationship);
+                relationship.AddColumnRelationship(columnRelationshipInformation: columnRelationshipInformation);
             }
         }
-        return relationships;
+        return relationship;
     }
 
     private string CreatePrimaryKeys(XmlNode uniqueNode)
