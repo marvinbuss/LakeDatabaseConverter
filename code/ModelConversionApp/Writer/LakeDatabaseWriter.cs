@@ -1,4 +1,4 @@
-﻿using ModelConversionApp.Models;
+﻿using ModelConversionApp.Models.LakeDatabase;
 using System.Text.Json;
 
 namespace ModelConversionApp.Writer;
@@ -72,7 +72,7 @@ internal class LakeDatabaseWriter
             var databasefilecontent = new
             {
                 name = database.Name,
-                properties = database
+                properties = database,
                 type = database.EntityType,
             };
 
