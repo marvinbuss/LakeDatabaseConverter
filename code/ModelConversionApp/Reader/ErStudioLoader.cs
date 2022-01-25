@@ -1,5 +1,5 @@
 ﻿using ModelConversionApp.Models.LakeDatabase;
-using System.Text.Json;
+using ModelConversionApp.Models.Reader;
 using System.Xml;
 using System.Xml.Schema;
 
@@ -32,23 +32,91 @@ internal class ErStudioLoader : ILoader
         // Create output lists
         var tables = new List<Table>();
         var relationships = new List<Relationship>();
+        var typeMapping = new Dictionary<string, DataType>();
 
         // Convert to lake database
-        foreach (XmlNode tableNode in schemaNode.ChildNodes)
+        if(schemaNode != null)
         {
-            if (tableNode.Name == "xs:element" && GetAttributeValue(node: tableNode, attributeName: "msprop:TableType") == "Table")
+            foreach (XmlNode childNode in schemaNode.ChildNodes)
             {
-                var (table, relationships_new) = CreateTableDefinition(tableNode: tableNode);
-                tables.Add(table);
-                relationships.AddRange(relationships_new);
+                if (childNode.Name == "xs:element" && GetAttributeValue(node: childNode, attributeName: "msprop:TableType") == "Table")
+                {
+                    var (table, relationships_new) = CreateTableDefinition(tableNode: childNode);
+                    tables.Add(table);
+                    relationships.AddRange(relationships_new);
+                }
+                else if (childNode.Name == "xs:simpleType")
+                {
+                    var originalType = GetAttributeValue(node: childNode, attributeName: "name");
+                    var lakeDatabaseType = CreateTypeDefinition(dataTypeNode: childNode);
+                    if (lakeDatabaseType != null)
+                    {
+                        typeMapping.Add(key: originalType, value: lakeDatabaseType);
+                    }
+                }
             }
-            else if (tableNode.Name == "xs:simpleType")
-            {
-                // TODO: Create dict with Types
-            }
-
         }
+
+        // Map types in tables
+        foreach (var table in tables)
+        {
+            foreach (var column in table.StorageDescriptor.Columns)
+            {
+                DataType newDataType;
+                var keyAvailable = typeMapping.TryGetValue(key: column.OriginDataTypeName.TypeName, value: out newDataType);
+
+                if (keyAvailable)
+                {
+                    column.OriginDataTypeName.TypeName = newDataType.TypeName;
+                    column.OriginDataTypeName.Properties.HiveTypeString = newDataType.TypeName;
+                    column.OriginDataTypeName.Properties.DateFormat = newDataType.Restrictions.DateFormat;
+                    column.OriginDataTypeName.Properties.TimestampFormat = newDataType.Restrictions.TimestampFormat;
+                    column.OriginDataTypeName.Length = newDataType.Restrictions.Length;
+                    column.OriginDataTypeName.Precision = newDataType.Restrictions.Precision;
+                    column.OriginDataTypeName.Scale = newDataType.Restrictions.Scale;
+                }
+            }
+        }
+
         return (tables, relationships);
+    }
+
+    private DataType? CreateTypeDefinition(XmlNode dataTypeNode)
+    {
+        DataType? dataType = null;
+        foreach (XmlNode childNode in dataTypeNode.ChildNodes)
+        {
+            if (childNode.Name == "xs:restriction")
+            {
+                dataType = new DataType
+                {
+                    TypeName = DataTypeConverter.ConvertErStudioToLakeDatabaseDataType(dataType: GetAttributeValue(node: childNode, attributeName: "base")),
+                };
+
+                foreach (XmlNode restrictionChildNode in childNode.ChildNodes)
+                {
+                    if (restrictionChildNode.Name == "xs:maxLength")
+                    {
+                        dataType.Restrictions.Length = Convert.ToInt32(GetAttributeValue(node: restrictionChildNode, attributeName: "value"));
+                    }
+                    else if (restrictionChildNode.Name == "xs:totalDigits")
+                    {
+                        dataType.Restrictions.Precision = Convert.ToInt32(GetAttributeValue(node: restrictionChildNode, attributeName: "value"));
+                        dataType.Restrictions.Scale = 2;
+                    }
+                }
+
+                if (dataType.TypeName == "date")
+                {
+                    dataType.Restrictions.DateFormat = "YYYY-MM-DD";
+                }
+                else if (dataType.TypeName == "timestamp")
+                {
+                    dataType.Restrictions.TimestampFormat = "YYYY-MM-DD HH:MM:SS.fffffffff";
+                }
+            }
+        }
+        return dataType;
     }
 
     private (Table, List<Relationship>) CreateTableDefinition(XmlNode tableNode)
@@ -154,8 +222,8 @@ internal class ErStudioLoader : ILoader
                     {
                         TypeName = GetAttributeValue(node: columnNode, attributeName: "type"),
                         IsComplexType = false,
-                        IsNullable = GetAttributeValue(node: columnNode, attributeName: "nillable"), // TODO: Convert.ToBoolean(columnNode.Attributes.GetNamedItem(name: "nillable").Value)
-                        Length = GetAttributeValue(node: columnNode, attributeName: "msdata:DataSize"),  // TODO: string.IsNullOrEmpty(columnNode.Attributes?.GetNamedItem(name: "msdata:DataSize")?.Value) ? 0 : Convert.ToInt32(columnNode.Attributes?.GetNamedItem("msdata:DataSize")?.Value),
+                        IsNullable = Convert.ToBoolean(GetAttributeValue(node: columnNode, attributeName: "nillable")),
+                        Length = Convert.ToInt32(GetAttributeValue(node: columnNode, attributeName: "msdata:DataSize")),
                         Properties = new OriginDataTypeProperties
                         {
                             HiveTypeString = GetAttributeValue(node: columnNode, attributeName: "type"),
