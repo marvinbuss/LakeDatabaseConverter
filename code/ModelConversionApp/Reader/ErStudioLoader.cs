@@ -1,9 +1,9 @@
-﻿using ModelConversionApp.Models;
+﻿using ModelConversionApp.Models.LakeDatabase;
 using System.Text.Json;
 using System.Xml;
 using System.Xml.Schema;
 
-namespace ModelConversionApp.Reader.Loader;
+namespace ModelConversionApp.Reader;
 
 internal class ErStudioLoader : ILoader
 {
@@ -14,7 +14,7 @@ internal class ErStudioLoader : ILoader
         this.FilePath = filePath;
     }
 
-    public void LoadModel()
+    public (List<Table> tables, List<Relationship> relationships) LoadModel()
     {
         // Load XML file
         var doc = new XmlDocument();
@@ -29,34 +29,9 @@ internal class ErStudioLoader : ILoader
         // var databaseNode = doc.SelectSingleNode(xpath: "//dataSourceView:DataSourceID", nsmgr: nsMgr);
         var schemaNode = doc.SelectSingleNode(xpath: "//dataSourceView:Schema/xs:schema", nsmgr: nsMgr);
 
-        // Create Database and list of tables
-        // var database = new Database
-        // {
-        //    Name = databaseNode.InnerXml.Trim(),
-        // };
-        var databases = new List<string>();
+        // Create output lists
         var tables = new List<Table>();
         var relationships = new List<Relationship>();
-
-        //var databaseFileContent = new
-        //{
-        //    name = database.Name,
-        //    properties = database,
-        //    type = database.EntityType,
-        //};
-        var options = new JsonSerializerOptions
-        {
-            WriteIndented = true,
-        };
-
-        //Directory.CreateDirectory(path: $"{Directory.GetCurrentDirectory()}/database");
-        //Directory.CreateDirectory(path: $"{Directory.GetCurrentDirectory()}/database/{database.Name}/table");
-        //Directory.CreateDirectory(path: $"{Directory.GetCurrentDirectory()}/database/{database.Name}/relationship");
-        // var databaseJsonString = JsonSerializer.Serialize(value: databaseFileContent, options: options);
-        // using FileStream fileStream = File.Create(path: $"./database/{database.Name}.json");
-        // await JsonSerializer.SerializeAsync(utf8Json: fileStream, value: databaseFileContent, options: options);
-        // await fileStream.DisposeAsync();
-
 
         // Convert to lake database
         foreach (XmlNode tableNode in schemaNode.ChildNodes)
@@ -69,54 +44,11 @@ internal class ErStudioLoader : ILoader
             }
             else if (tableNode.Name == "xs:simpleType")
             {
-                // Todo: Create dict with Types
+                // TODO: Create dict with Types
             }
 
         }
-
-        foreach (var table in tables)
-        {
-            databases.Add(table.Namespace.DatabaseName);
-            var tableFileContent = new
-            {
-                name = table.Name,
-                properties = table,
-                type = table.EntityType,
-            };
-            string fileName = $"{Directory.GetCurrentDirectory()}/database/{table.Namespace.DatabaseName}/table/{table.Name}.json";
-            string jsonString = JsonSerializer.Serialize(value: tableFileContent, options: options);
-            File.WriteAllText(fileName, jsonString);
-        }
-        foreach (var relationship in relationships)
-        {
-            var relationshipFileContent = new
-            {
-                name = relationship.Name,
-                properties = relationship,
-                type = relationship.EntityType,
-            };
-            string fileName = $"{Directory.GetCurrentDirectory()}/database/{relationship.Namespace.DatabaseName}/relationship/{relationship.Name}.json";
-            string jsonString = JsonSerializer.Serialize(value: relationshipFileContent, options: options);
-            File.WriteAllText(fileName, jsonString);
-        }
-
-        foreach (var databaseName in databases.Distinct<string>())
-        {
-            var database = new Database
-            {
-                Name = databaseName,
-            };
-            var databasefilecontent = new
-            {
-                name = database.Name,
-                properties = database,
-                type = database.EntityType,
-            };
-
-            string fileName = $"{Directory.GetCurrentDirectory()}/database/{database.Name}.json";
-            string jsonString = JsonSerializer.Serialize(value: databasefilecontent, options: options);
-            File.WriteAllText(fileName, jsonString);
-        }
+        return (tables, relationships);
     }
 
     private (Table, List<Relationship>) CreateTableDefinition(XmlNode tableNode)
@@ -222,8 +154,8 @@ internal class ErStudioLoader : ILoader
                     {
                         TypeName = GetAttributeValue(node: columnNode, attributeName: "type"),
                         IsComplexType = false,
-                        IsNullable = GetAttributeValue(node: columnNode, attributeName: "nillable"), // Convert.ToBoolean(columnNode.Attributes.GetNamedItem(name: "nillable").Value)
-                        Length = GetAttributeValue(node: columnNode, attributeName: "msdata:DataSize"),  // string.IsNullOrEmpty(columnNode.Attributes?.GetNamedItem(name: "msdata:DataSize")?.Value) ? 0 : Convert.ToInt32(columnNode.Attributes?.GetNamedItem("msdata:DataSize")?.Value),
+                        IsNullable = GetAttributeValue(node: columnNode, attributeName: "nillable"), // TODO: Convert.ToBoolean(columnNode.Attributes.GetNamedItem(name: "nillable").Value)
+                        Length = GetAttributeValue(node: columnNode, attributeName: "msdata:DataSize"),  // TODO: string.IsNullOrEmpty(columnNode.Attributes?.GetNamedItem(name: "msdata:DataSize")?.Value) ? 0 : Convert.ToInt32(columnNode.Attributes?.GetNamedItem("msdata:DataSize")?.Value),
                         Properties = new OriginDataTypeProperties
                         {
                             HiveTypeString = GetAttributeValue(node: columnNode, attributeName: "type"),
@@ -252,7 +184,8 @@ internal class ErStudioLoader : ILoader
     {
         try
         {
-            return node.Attributes.GetNamedItem(attributeName).Value;
+            string? attribteValue = node.Attributes?.GetNamedItem(attributeName)?.Value;
+            return string.IsNullOrEmpty(attribteValue) ? "" : attribteValue;
         }
         catch (Exception ex)
         {
