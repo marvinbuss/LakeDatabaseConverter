@@ -11,5 +11,5 @@ internal class TableProperties
     [JsonPropertyName("PrimaryKeys")]
     public string PrimaryKeys { get; set; } = "";
     [JsonPropertyName("spark.sql.sources.provider")]
-    public string sparkSqlSourcesProvider { get; set; } = "parquet";
+    public string SparkSqlSourcesProvider { get; set; } = "parquet";
 }
