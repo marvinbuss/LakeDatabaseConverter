@@ -1,4 +1,4 @@
-﻿namespace ModelConversionApp.Models;
+﻿namespace ModelConversionApp.Models.LakeDatabase;
 
 internal enum ColumnType
 {

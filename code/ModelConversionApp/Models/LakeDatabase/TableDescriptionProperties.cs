@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ModelConversionApp.Models;
+namespace ModelConversionApp.Models.LakeDatabase;
 
 internal class TableDescriptionProperties
 {

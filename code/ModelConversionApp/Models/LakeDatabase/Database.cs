@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ModelConversionApp.Models;
+namespace ModelConversionApp.Models.LakeDatabase;
 
 internal class Database
 {
     [JsonPropertyName("Name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [JsonPropertyName("Description")]
     public string Description { get; set; } = "";
     [JsonPropertyName("EntityType")]

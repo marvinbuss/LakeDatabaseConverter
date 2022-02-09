@@ -1,4 +1,4 @@
-﻿using ModelConversionApp.Models;
+﻿using ModelConversionApp.Models.LakeDatabase;
 using System.Text.Json;
 
 namespace ModelConversionApp.Writer;
@@ -31,11 +31,15 @@ internal class LakeDatabaseWriter
         var options = new JsonSerializerOptions
         {
             WriteIndented = true,
+            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
         };
 
         // Write lake database tables to folder
         foreach (var table in Tables)
         {
+            // Create directory structure
+            Directory.CreateDirectory(path: $"{Directory.GetCurrentDirectory()}/database/{table.Namespace.DatabaseName}/table");
+
             databaseNames.Add(item: table.Namespace.DatabaseName);
             var tableFileContent = new
             {
@@ -51,6 +55,9 @@ internal class LakeDatabaseWriter
         // Write lake database relationships to folder
         foreach (var relationship in Relationships)
         {
+            // Create directory structure
+            Directory.CreateDirectory(path: $"{Directory.GetCurrentDirectory()}/database/{relationship.Namespace.DatabaseName}/relationship");
+
             var relationshipFileContent = new
             {
                 name = relationship.Name,
@@ -72,7 +79,7 @@ internal class LakeDatabaseWriter
             var databasefilecontent = new
             {
                 name = database.Name,
-                properties = database
+                properties = database,
                 type = database.EntityType,
             };
 

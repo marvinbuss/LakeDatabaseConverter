@@ -1,11 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ModelConversionApp.Models;
+namespace ModelConversionApp.Models.LakeDatabase;
 
 internal class Table
 {
     [JsonPropertyName("Name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
     [JsonPropertyName("Description")]
     public string Description { get; set; } = "";
     [JsonPropertyName("EntityType")]
@@ -19,7 +19,7 @@ internal class Table
     [JsonPropertyName("IsRewriteEnabled")]
     public bool IsRewriteEnabled { get; set; } = false;
     [JsonPropertyName("Namespace")]
-    public Namespace Namespace { get; set; }
+    public Namespace? Namespace { get; set; }
     [JsonPropertyName("Properties")]
     public TableProperties Properties { get; set; } = new TableProperties();
     [JsonPropertyName("Origin")]

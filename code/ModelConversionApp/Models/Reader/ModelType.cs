@@ -1,6 +1,6 @@
-﻿using ModelConversionApp.Reader.Loader;
+﻿using ModelConversionApp.Reader;
 
-namespace ModelConversionApp.Reader.Models;
+namespace ModelConversionApp.Models.Reader;
 
 internal enum ModelType
 {
