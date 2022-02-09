@@ -9,7 +9,7 @@ internal class Program
     {
         // Define file path
         var filePath = @"C:\Users\marvi\source\marvinbuss\SynapseModelConversion\code\models\export\model.dsv";
-        
+
         // Convert Model to Table and Relationship objects
         var loader = ModelTypeConverter.ConvertModelToLoader(type: ModelType.ErStudio, filePath: filePath);
         var (tables, relationships) = loader.LoadModel();
