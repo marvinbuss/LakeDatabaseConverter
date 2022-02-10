@@ -144,14 +144,25 @@ internal class ErStudioLoader : ILoader
             }
             else if (childNode.Name == "xs:unique")
             {
-                if (GetAttributeValue(node: childNode, attributeName: "name").Contains(value: "_PK"))
+                if (GetAttributeValue(node: childNode, attributeName: "name").Contains(value: "_PK") || GetAttributeValue(node: childNode, attributeName: "name").Contains(value: "PK_"))
                 {
                     var primaryKeys = this.CreatePrimaryKeys(uniqueNode: childNode);
                     table.Properties.PrimaryKeys = primaryKeys;
                 }
                 else if (GetAttributeValue(node: childNode, attributeName: "name").Contains(value: "_RELATIONSHIP"))
                 {
-                    var relationship = this.CreateRelationships(uniqueNode: childNode, sourceTableName: table.Name, databaseName: table.Namespace.DatabaseName);
+                    // Parse name of the other table
+                    var sinkTableName = GetAttributeValue(node: childNode, attributeName: "name").Split(separator: "_RELATIONSHIP")[0];
+
+                    var relationship = this.CreateRelationships(uniqueNode: childNode, sourceTableName: table.Name, databaseName: table.Namespace.DatabaseName, sinkTableName: sinkTableName);
+                    relationships.Add(relationship);
+                }
+                else
+                {
+                    // Parse name of the other table
+                    var sinkTableName = GetAttributeValue(node: childNode, attributeName: "name");
+
+                    var relationship = this.CreateRelationships(uniqueNode: childNode, sourceTableName: table.Name, databaseName: table.Namespace.DatabaseName, sinkTableName: sinkTableName);
                     relationships.Add(relationship);
                 }
             }
@@ -159,11 +170,8 @@ internal class ErStudioLoader : ILoader
         return (table, relationships);
     }
 
-    private Relationship CreateRelationships(XmlNode uniqueNode, string sourceTableName, string databaseName)
+    private Relationship CreateRelationships(XmlNode uniqueNode, string sourceTableName, string databaseName, string sinkTableName)
     {
-        // Parse name of the other table
-        var sinkTableName = GetAttributeValue(node: uniqueNode, attributeName: "name").Split(separator: "_RELATIONSHIP")[0];
-
         var relationship = new Relationship
         {
             Name = $"{sourceTableName}-{sinkTableName}",
