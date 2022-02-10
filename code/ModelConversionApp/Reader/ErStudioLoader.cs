@@ -35,7 +35,7 @@ internal class ErStudioLoader : ILoader
         var typeMapping = new Dictionary<string, DataType>();
 
         // Convert to lake database
-        if(schemaNode != null)
+        if (schemaNode != null)
         {
             foreach (XmlNode childNode in schemaNode.ChildNodes)
             {
