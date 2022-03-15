@@ -8,7 +8,7 @@ internal class Program
 {
     static async Task Main(string[] args)
     {
-        // Define arguments
+        // Define argument for model file path
         var fileInfo = new Option<FileInfo>(
             name: "--file-path",
             description: "Specifies the file path of the model file.")
@@ -20,6 +20,7 @@ internal class Program
         }.ExistingOnly();
         fileInfo.AddAlias(alias: "-f");
 
+        // Define argument for model type
         var modelType = new Option<ModelType>(
             name: "--model-type",
             description: "Specifies the type of the model.")
