@@ -7,18 +7,18 @@ namespace ModelConversionApp.Reader;
 
 internal class ErStudioLoader : ILoader
 {
-    private string FilePath;
+    private FileInfo FileInfo;
 
-    public ErStudioLoader(string filePath)
+    public ErStudioLoader(FileInfo fileInfo)
     {
-        this.FilePath = filePath;
+        this.FileInfo = fileInfo;
     }
 
     public (List<Table> tables, List<Relationship> relationships) LoadModel()
     {
         // Load XML file
         var doc = new XmlDocument();
-        doc.Load(filename: this.FilePath);
+        doc.Load(filename: this.FileInfo.FullName);
 
         // Create XML namespace manager for resolving namespaces
         var nsMgr = new XmlNamespaceManager(doc.NameTable);
