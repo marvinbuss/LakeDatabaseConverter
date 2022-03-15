@@ -9,11 +9,11 @@ internal enum ModelType
 
 internal static class ModelTypeConverter
 {
-    internal static ILoader ConvertModelToLoader(ModelType type, string filePath)
+    internal static ILoader ConvertModelToLoader(ModelType type, FileInfo fileInfo)
     {
         return type switch
         {
-            ModelType.ErStudio => new ErStudioLoader(filePath: filePath),
+            ModelType.ErStudio => new ErStudioLoader(fileInfo: fileInfo),
             _ => throw new NotSupportedException()
         };
     }
