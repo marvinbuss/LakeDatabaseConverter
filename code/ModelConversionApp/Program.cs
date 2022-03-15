@@ -9,7 +9,7 @@ internal class Program
     static async Task Main(string[] args)
     {
         // Define arguments
-        var filePath = new Option<FileInfo>(
+        var fileInfo = new Option<FileInfo>(
             name: "--file-path",
             description: "Specifies the file path of the model file.")
         {
@@ -18,7 +18,7 @@ internal class Program
             ArgumentHelpName = "Model File Path",
             IsRequired = true
         }.ExistingOnly();
-        filePath.AddAlias(alias: "-f");
+        fileInfo.AddAlias(alias: "-f");
 
         var modelType = new Option<ModelType>(
             name: "--model-type",
@@ -34,15 +34,13 @@ internal class Program
         // Add root command
         var rootCommand = new RootCommand(description: "This Tool converts existing Data Models into Lake Database models.")
         {
-            filePath,
+            fileInfo,
             modelType
         };
-        rootCommand.SetHandler((FileInfo filePath, ModelType modelType) =>
+        rootCommand.SetHandler((FileInfo fileInfo, ModelType modelType) =>
         {
-            CreateLakeDatabase()
-            Console.WriteLine($"The value for --bool-option is: {modelType}");
-            Console.WriteLine($"The value for --file-option is: {filePath?.FullName ?? "null"}");
-        }, filePath, modelType);
+            CreateLakeDatabase(fileInfo: fileInfo, modelType: modelType);
+        }, fileInfo, modelType);
 
         await rootCommand.InvokeAsync(args);
     }
