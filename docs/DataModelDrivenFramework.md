@@ -187,11 +187,3 @@ Inside the repository, it is advised to use the following folder structure for L
                                                       /{relationships}/…
  
 Outdated and deprecated Lake Database models should be removed over time from the common Lake Database repository. If users want to upgrade to a newer Lake Database version, access and rollout should be requested through the Power Platform application existing in the customer environment.
-
-## Section 5: Roadmap and Future Features  
-Ultimately, we are proposing the following platform additions and feature changes to enhance the overall value for our customers:
-
-1. Native model conversion feature in Synapse that allows to import a model defined in a separate data modelling tool.
-2. Support of model versioning within Synapse.
-3. Use of Purview as a discovery and sharing mechanism within the platform.
-    1. Scanning and of Lake Databases
