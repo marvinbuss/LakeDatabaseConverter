@@ -4,7 +4,7 @@
 
 ## Section 1: Introduction
 
-### Purpose of this Whitepaper 
+### Purpose of this Whitepaper
 
 Over the last few years, many organisations have successfully shifted from a traditional data warehouse pattern to a modern data warehouse   paradigm. This allowed them to overcome some of the constraints around 3 V’s (velocity, volume, variety) of data, using an ELT (Extract, Load, Transform) approach to land relevant data in central data lakes.
 Nowadays, we are seeing new paradigms such as Data Mesh and Lakehouse pattern emerging, which are looking to address some of the challenges around data sharing, data ownership, data duplication, cost optimisation and much more.
@@ -44,7 +44,7 @@ Since such capability is not available natively in the platform today, a custom 
 
 ### Personas
 
-There are multiple personas involved throughout the creation of a data model to its consumption. 
+There are multiple personas involved throughout the creation of a data model to its consumption.
 
 Please find below details on some of the key personas. Please note, depending on the size and complexity of each organisation, an individual might play the role of multiple personas.
 
@@ -59,9 +59,9 @@ Please find below details on some of the key personas. Please note, depending on
 
 Our recommended approach is to start with a single, preferably green field, Data Landing Zone and extend the solution over time. The approach is broken down into three phases:
 
-1.	Initial implementation of a Data Model Driven Framework for a given Business Group 
-2.	Enhancements to initial process and development of rollout mechanism to Synapse workspaces
-3.	Rollout of the Data Model Driven Framework across all Data Landing Zones
+1. Initial implementation of a Data Model Driven Framework for a given Business Group
+2. Enhancements to initial process and development of rollout mechanism to Synapse workspaces
+3. Rollout of the Data Model Driven Framework across all Data Landing Zones
 
 The following subsections describes the steps required to implement a Data Model Driven Framework within Azure using a phased approach.
 
@@ -104,19 +104,19 @@ After the initial pilot phase has been successfully completed and value has been
 
 In phase 3 customers should focus on the successful rollout and scaling of the solution across all Data Landing Zones to realize the full value of the Data Model Driven Framework:
 
-1. **Rollout across Data Landing Zones and Business units:** In the third phase, other business units should be onboarded and their specific models should be added to the common Lake Database repository. We are suggesting to keep a single model repository instead of splitting the repository by business unit or data domain. 
+1. **Rollout across Data Landing Zones and Business units:** In the third phase, other business units should be onboarded and their specific models should be added to the common Lake Database repository. We are suggesting to keep a single model repository instead of splitting the repository by business unit or data domain.
 
 ## Section 3: Model Conversion Tool
 
 ### Introduction
 
-Many organizations have established standardized data modelling tools that are used by Data Modellers to define common and standardized data models across the organization or business units. 
+Many organizations have established standardized data modelling tools that are used by Data Modellers to define common and standardized data models across the organization or business units.
 A common standard allows customers to share models across projects and business units and enables reuse of existing artifacts. Common tools used across the industry are:
 
 * ER Studio Architect
 * Erwin Data Modeller
 
-These well-established modelling tools have evolved into complex solutions over time that enable the definition of logical models with simple entities and relationships, but also the definition of complex business structures, data domains and business logic. In addition, these tools often support versioning across all defined artifacts and additional features, such as dedicated model repositories that can be hosted to share models within a business entity. 
+These well-established modelling tools have evolved into complex solutions over time that enable the definition of logical models with simple entities and relationships, but also the definition of complex business structures, data domains and business logic. In addition, these tools often support versioning across all defined artifacts and additional features, such as dedicated model repositories that can be hosted to share models within a business entity.
 Besides the aforementioned logical models, these tools also provide the functionality to generate physical models and DDLs to quickly create the schema and tables within the Data Warehouse of choice.
 
 ### Need for Data Model Conversion
@@ -159,7 +159,7 @@ The converter will load the DSV file and convert it into the following Lake Data
 * database/<database-name>/table/<table-name-1>.json
 * database/<database-name>/relationship/<relationship-1>.json
 
-These files can then be checked into the repository that is connected to your Synapse workspace and will then be loaded by the Synapse Studio the next time you open up the website.
+These files can then be checked into the repository that is connected to your Synapse workspace and will then be loaded by the Synapse Studio the next time you open up the site.
 
 As a next step, we will explore a different conversion mechanism as well as the direct export from the ER Studio Team Server.
 
@@ -180,10 +180,10 @@ A version suffix should be used to specify the version of a model. Semantic vers
 
 Checking in the Lake Database definitions into git will allow tracking of changes and will also allow to identify potential issues when updating to a newer model version in a downstream Synapse workspace. Using different name suffixes to realize versioning will also allow to use multiple versions of a Lake Database side by side.
 
-**Changes between versions should be documented by model owners, so that Data Engineers can consume change logs and identify potential issues when upgrading.** This should be done inside a wiki or within a README file inside the Lake Database repository.
+**Changes between versions should be documented by model owners, so that Data Engineers can consume changelogs and identify potential issues when upgrading.** This should be done inside a wiki or within a README file inside the Lake Database repository.
 
 Inside the repository, it is advised to use the following folder structure for Lake Database definitions:
 {Domain}/{ModelName}/{Version}/database/{databaseName}/{tables}/…
                                                       /{relationships}/…
- 
+
 Outdated and deprecated Lake Database models should be removed over time from the common Lake Database repository. If users want to upgrade to a newer Lake Database version, access and rollout should be requested through the Power Platform application existing in the customer environment.
