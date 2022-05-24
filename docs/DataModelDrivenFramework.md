@@ -168,7 +168,7 @@ The following enhancements are considered:
 * Adding Frontend for the model conversion process in Power Platform.
 * Automated workflows to push the model to a configured workspace
 
-## Section 4: Data Models Versioning
+## Section 4: Data Model Versioning
 
 Today, Lake Databases do not support versioning at any layer. It is also not possible to place models into subfolders, which is why folders cannot be used either to define a versioning strategy. Therefore, versioning must be implemented using database names.
 
