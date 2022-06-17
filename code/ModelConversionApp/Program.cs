@@ -1,4 +1,9 @@
-﻿using ModelConversionApp.Models.Reader;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using ModelConversionApp.Clients.ErStudio;
+using ModelConversionApp.Models.Reader;
 using ModelConversionApp.Writer;
 using System.CommandLine;
 
@@ -7,6 +12,30 @@ namespace ModelConversionApp;
 internal class Program
 {
     static async Task Main(string[] args)
+    {
+        // Parse args
+        var rootCommand = ParseArgs();
+
+        // Initialize Services
+        var host = ConfigureServices();
+        using (var serviceScope= host.Services.CreateScope())
+        {
+            await rootCommand.InvokeAsync(args);
+        }
+    }
+
+    static void CreateLakeDatabase(FileInfo fileInfo, ModelType modelType)
+    {
+        // Convert Model to Table and Relationship objects
+        var loader = ModelTypeConverter.ConvertModelToLoader(type: modelType, fileInfo: fileInfo);
+        var (tables, relationships) = loader.LoadModel();
+
+        // Write table and relationship objects as lake databases
+        var writer = new LakeDatabaseWriter(tables: tables, relationships: relationships);
+        writer.WriteLakeDatabase();
+    }
+
+    static RootCommand ParseArgs()
     {
         // Define argument for model file path
         var fileInfo = new Option<FileInfo>(
@@ -43,17 +72,20 @@ internal class Program
             CreateLakeDatabase(fileInfo: fileInfo, modelType: modelType);
         }, fileInfo, modelType);
 
-        await rootCommand.InvokeAsync(args);
+        return rootCommand;
     }
 
-    static void CreateLakeDatabase(FileInfo fileInfo, ModelType modelType)
+    static IHost ConfigureServices()
     {
-        // Convert Model to Table and Relationship objects
-        var loader = ModelTypeConverter.ConvertModelToLoader(type: modelType, fileInfo: fileInfo);
-        var (tables, relationships) = loader.LoadModel();
+        var host = Host.CreateDefaultBuilder()
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddLogging(c => c.AddConsole());
+                services.AddTransient<ErStudioClient>();
+            })
+            .UseConsoleLifetime()
+            .Build();
 
-        // Write table and relationship objects as lake databases
-        var writer = new LakeDatabaseWriter(tables: tables, relationships: relationships);
-        writer.WriteLakeDatabase();
+        return host;
     }
 }
